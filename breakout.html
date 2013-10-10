@@ -6,6 +6,9 @@
     <meta name=description content="implements the game Breakout using HTML5 canvas and Javascript">
     <meta name=viewport content="width=device-width, initial-scale=1">
 
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.13.0/build/cssfonts/cssfonts-min.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.13.0/build/cssbutton/cssbutton.css">
+
     <style>
     #canvas {
         border-style: dotted;
@@ -16,21 +19,34 @@
     #button {
         display: block;
         margin: 20px auto;
+        font-size: 123.1%; // renders 16px
+    }
+    #scoreboard {
+        width: 500px;
+        margin: 10px auto;
+        text-align: center;
+        font-size: 153.9%; // renders 20px
+    }
+    input {
+        text-align: center;
     }
     </style>
 </head>
-<link rel="stylesheet" href="http://yui.yahooapis.com/3.13.0/build/cssbutton/cssbutton.css">
 
 <body>
+
+<div id=scoreboard>
+Score: <input type=text size=3 disabled value=0 name=score> 
+</div>
 
 <canvas id=canvas width=500 height=400></canvas>
 <button id=button class=yui3-button>New Game</button>
 
 <script>
-var x = 250;
-var y = 125;
-var dx = 2;
-var dy = 4;
+var x;
+var y;
+var dx;
+var dy;
 var ctx;
 var width;
 var height;
@@ -39,6 +55,7 @@ var intervalId = 0;
 var canvasMinX = 0;
 var canvasMaxX = 0;
 var velocityFactor = 1.02;
+var score = 0;
 
 // paddle position
 var paddlex;
@@ -57,6 +74,10 @@ var brick_width;
 var brick_height;
 var padding;
 
+
+function showScore(i) {
+    document.getElementsByName("score")[0].value = i;
+}
 
 function circle(x, y, r) {
     ctx.fillStyle = "#000000"
@@ -115,22 +136,33 @@ function init() {
     canvasMaxX = canvasMinX + width;
 
     initbricks();
+    drawBricks();
 
     // draw the ball 
+    x = 250;
+    y = 125;
     circle(x, y, 10);
     // draw the paddle
     ctx.fillStyle = "#000000";
     rect(paddlex, height-paddleh, paddlew, paddleh);
-    // draw bricks
-    drawBricks();
 
     // start the game when the player clicks the button
     document.getElementById("button").onclick = function() {
+        
+        x = 250;
+        y = 125;
+        initbricks();
+     
+        // reset scoreboard 
+        score = 0; 
+        showScore(score);
+
+        // reset velocity
+        dx = 2;
+        dy = 4; 
+ 
         // run draw() every 15 milliseconds 
         intervalId = setInterval(draw, 15);
-
-        // hide the button
-        document.getElementById("button").style.display = "none";
     }
 
 }
@@ -194,7 +226,29 @@ function draw() {
     if (y < NROWS * rowheight && row >= 0 && col >= 0 && bricks[row][col] == 1) {
         // increase y-velocity for every brick broken
         dy = -dy * velocityFactor;    
+
+        // mark brick as broken
         bricks[row][col] = 0;
+
+        // increase the score - higher bricks are worth more points
+        switch (row) {
+        case 4:
+            score = score + 1;
+            break;
+        case 3:
+            score = score + 1.5;
+            break;
+        case 2:
+            score = score + 2;
+            break;
+        case 1:
+            score = score + 2.5;
+            break;
+        case 0:
+            score = score + 3;
+            break;
+        }
+        showScore(score);
     }
 
     // move the paddle when left or right arrows are pressed
@@ -241,7 +295,7 @@ function draw() {
         }
     }
 
-    // move the ball along x and y axes
+    // create the illusion of movement
     x = x + dx;
     y = y + dy;
 }
