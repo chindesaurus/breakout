@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset=utf-8>
+    <title>Breakout</title>
+    <meta name=description content="implements the game Breakout using HTML5 canvas and Javascript">
+    <meta name=viewport content="width=device-width, initial-scale=1">
+
+    <style>
+    #canvas {
+        border-style: dotted;
+        border-width: 1px;
+        display: block;
+        margin: 0 auto;
+    }
+    </style>
+</head>
+
+<body>
+
+<canvas id=canvas width=500 height=400></canvas>
+
+<script>
+var x = 150;
+var y = 150;
+var dx = 2;
+var dy = 4;
+var ctx;
+var width;
+var height;
+var intervalId = 0;
+
+var canvasMinX = 0;
+var canvasMaxX = 0;
+
+// paddle position
+var paddlex;
+var paddleh;
+var paddlew;
+
+// left and right arrow keys
+var leftDown = false;
+var rightDown = false;
+
+// brick variables
+var bricks;
+var NROWS;
+var NCOLS;
+var brick_width;
+var brick_height;
+var padding;
+
+
+function circle(x, y, r) {
+    ctx.fillStyle = "#000000"
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI*2, true);
+    ctx.closePath();
+    ctx.fill();
+}
+
+function rect(x, y, w, h) {
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.closePath();
+    ctx.fill();
+}
+
+function clear() {
+    ctx.clearRect(0, 0, width, height);
+}
+
+
+function onKeyDown(evt) {
+    if (evt.keyCode == 39)
+        rightDown = true;
+    else if (evt.keyCode == 37)
+        leftDown = true;
+}
+function onKeyUp(evt) {
+    if (evt.keyCode == 39)
+        rightDown = false;
+    else if (evt.keyCode == 37)
+        leftDown = false;
+}
+window.onkeydown = onKeyDown;
+window.onkeyup = onKeyUp;
+
+function onMouseMove(evt) {
+    if (evt.pageX > canvasMinX && evt.pageX < canvasMaxX)
+        paddlex = evt.pageX - canvasMinX - (paddlew / 2);
+}
+window.onmousemove = onMouseMove;
+
+function init() {
+    // get a reference to the canvas
+    ctx = document.getElementById("canvas").getContext("2d");
+    
+    // set height and width variables from DOM
+    width = document.getElementById("canvas").offsetWidth; 
+    height = document.getElementById("canvas").offsetHeight; 
+
+    paddlex = width / 2;
+    paddleh = 10;
+    paddlew = 75;
+
+    canvasMinX = document.getElementById("canvas").offsetLeft;
+    canvasMaxX = canvasMinX + width;
+
+    // run draw() every 10 milliseconds 
+    intervalId = setInterval(draw, 10);
+}
+
+function initbricks() {
+    NROWS = 5;
+    NCOLS = 5;
+    brick_width = (width / NCOLS) - 1;
+    brick_height = 15;
+    padding = 2;
+
+    bricks = new Array(NROWS)
+    for (i = 0; i < NROWS; i++) {
+        bricks[i] = new Array(NCOLS);
+        for (j = 0; j < NCOLS; j++)
+            bricks[i][j] = 1;
+    }
+}
+
+function drawBricks() {
+
+    // red, orange, yellow, green, blue
+    colors = ["#FA1100", "#FDCA00", "#FFFF00", "#3FFF00", "#3EFEFF"]
+    
+    for (i = 0; i < NROWS; i++) {
+        ctx.fillStyle = colors[i];
+        for (j = 0; j < NCOLS; j++) {
+            if (bricks[i][j] == 1) {
+                rect((j * (brick_width + padding)) + padding,
+                     (i * (brick_height + padding)) + padding,
+                           brick_width, brick_height);
+            }
+        }
+    }
+}
+
+function won() {
+    for (i = 0; i < NROWS; i++)
+        for (j = 0; j < NCOLS; j++)
+            if (bricks[i][j] != 0)
+                return false;
+
+    return true;
+}
+
+function draw() {
+    // clear the screen
+    clear();
+   
+    // draw the ball 
+    circle(x, y, 10);
+
+    drawBricks();
+   
+    rowheight = brick_height + padding;
+    colwidth = brick_width + padding;
+    row = Math.floor(y / rowheight);
+    col = Math.floor(x / colwidth);
+    // if we have hit a brick, reverse the ball's direction
+    // and mark the brick as broken
+    if (y < NROWS * rowheight && row >= 0 && col >= 0 && bricks[row][col] == 1) {
+        dy = -dy;
+        bricks[row][col] = 0;
+    }
+
+    // move the paddle when left or right arrows are pressed
+    if (rightDown)
+        paddlex = paddlex + 5;
+    else if (leftDown)
+        paddlex = paddlex - 5;
+
+    // don't let paddle go beyond the left and right walls
+    while (paddlew + paddlex > width)
+        paddlex--;
+    while (paddlex < 0)
+        paddlex++;
+
+    // draw the paddle
+    ctx.fillStyle = "#000000";
+    rect(paddlex, height-paddleh, paddlew, paddleh);
+
+    // bounce off left and right walls 
+    if (x + dx > width || x + dx < 0)
+        dx = -dx;
+
+    // bounce off of top wall
+    if (y + dy < 0)
+        dy = -dy; 
+   
+    // check if the player has won
+    if (won() == true) {
+        clearInterval(intervalId);
+        alert("You won!");
+    }             
+   
+    else if (y + dy > height) {
+        // bounce off of paddle
+        if (x > paddlex && x < paddlex + paddlew + 10) {
+            // change x based on where it hits the paddle
+            dx = 4 * ((x - (paddlex + paddlew / 2)) / paddlew);
+            dy = -dy;
+        }
+        // player lost the ball
+        else {
+            clearInterval(intervalId);
+            alert("Thanks for playing!");
+        }
+    }
+
+    // create the illusion of movement
+    x = x + dx;
+    y = y + dy;
+}
+
+init();
+initbricks();
+
+</script>
+
+</body>
+</html>
