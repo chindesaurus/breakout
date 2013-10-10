@@ -159,7 +159,11 @@ function init() {
         // reset velocity
         dx = 2;
         dy = 4; 
- 
+   
+        // reset arrow keys 
+        leftDown = false; 
+        rightDown = false; 
+
         // run draw() every 15 milliseconds 
         intervalId = setInterval(draw, 15);
     }
