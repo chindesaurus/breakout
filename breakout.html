@@ -157,12 +157,15 @@ function init() {
         showScore(score);
 
         // reset velocity
-        dx = 2;
+        // dx is in interval (-3, +3)
+        dx = (Math.random() * 6) - 3; 
         dy = 4; 
    
         // reset arrow keys 
         leftDown = false; 
         rightDown = false; 
+            
+        clearInterval(intervalId);
 
         // run draw() every 15 milliseconds 
         intervalId = setInterval(draw, 15);
