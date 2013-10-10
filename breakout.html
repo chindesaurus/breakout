@@ -107,6 +107,8 @@ function init() {
     canvasMinX = document.getElementById("canvas").offsetLeft;
     canvasMaxX = canvasMinX + width;
 
+    initbricks();
+
     // run draw() every 10 milliseconds 
     intervalId = setInterval(draw, 10);
 }
@@ -222,8 +224,6 @@ function draw() {
 }
 
 init();
-initbricks();
-
 </script>
 
 </body>
