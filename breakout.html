@@ -38,6 +38,7 @@ var intervalId = 0;
 
 var canvasMinX = 0;
 var canvasMaxX = 0;
+var velocityFactor = 1.02;
 
 // paddle position
 var paddlex;
@@ -125,8 +126,8 @@ function init() {
 
     // start the game when the player clicks the button
     document.getElementById("button").onclick = function() {
-        // run draw() every 10 milliseconds 
-        intervalId = setInterval(draw, 10);
+        // run draw() every 15 milliseconds 
+        intervalId = setInterval(draw, 15);
 
         // hide the button
         document.getElementById("button").style.display = "none";
@@ -191,7 +192,8 @@ function draw() {
     // if we have hit a brick, reverse the ball's direction
     // and mark the brick as broken
     if (y < NROWS * rowheight && row >= 0 && col >= 0 && bricks[row][col] == 1) {
-        dy = -dy;
+        // increase y-velocity for every brick broken
+        dy = -dy * velocityFactor;    
         bricks[row][col] = 0;
     }
 
@@ -239,7 +241,7 @@ function draw() {
         }
     }
 
-    // create the illusion of movement
+    // move the ball along x and y axes
     x = x + dx;
     y = y + dy;
 }
