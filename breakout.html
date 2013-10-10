@@ -13,16 +13,22 @@
         display: block;
         margin: 0 auto;
     }
+    #button {
+        display: block;
+        margin: 20px auto;
+    }
     </style>
 </head>
+<link rel="stylesheet" href="http://yui.yahooapis.com/3.13.0/build/cssbutton/cssbutton.css">
 
 <body>
 
 <canvas id=canvas width=500 height=400></canvas>
+<button id=button class=yui3-button>New Game</button>
 
 <script>
-var x = 150;
-var y = 150;
+var x = 250;
+var y = 125;
 var dx = 2;
 var dy = 4;
 var ctx;
@@ -109,8 +115,23 @@ function init() {
 
     initbricks();
 
-    // run draw() every 10 milliseconds 
-    intervalId = setInterval(draw, 10);
+    // draw the ball 
+    circle(x, y, 10);
+    // draw the paddle
+    ctx.fillStyle = "#000000";
+    rect(paddlex, height-paddleh, paddlew, paddleh);
+    // draw bricks
+    drawBricks();
+
+    // start the game when the player clicks the button
+    document.getElementById("button").onclick = function() {
+        // run draw() every 10 milliseconds 
+        intervalId = setInterval(draw, 10);
+
+        // hide the button
+        document.getElementById("button").style.display = "none";
+    }
+
 }
 
 function initbricks() {
