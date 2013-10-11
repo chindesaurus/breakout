@@ -29,6 +29,12 @@
     input {
         text-align: center;
     }
+<<<<<<< HEAD
+    audio {
+        display: none;
+    }
+=======
+>>>>>>> 7aeae9c0916ddac72125701d0b92711c661a616a
     </style>
 </head>
 
@@ -40,6 +46,11 @@ Score: <input type=text size=3 disabled value=0 name=score>
 
 <canvas id=canvas width=500 height=400></canvas>
 <button id=button class=yui3-button>New Game</button>
+<<<<<<< HEAD
+<audio id=hit src=./sounds/Boing.mp3></audio>
+<audio id=pop src=./sounds/pop.mp3></audio>
+=======
+>>>>>>> 7aeae9c0916ddac72125701d0b92711c661a616a
 
 <script>
 var x;
@@ -55,6 +66,11 @@ var canvasMinX = 0;
 var canvasMaxX = 0;
 var velocityFactor = 1.02;
 var score = 0;
+<<<<<<< HEAD
+var hit;
+var pop;
+=======
+>>>>>>> 7aeae9c0916ddac72125701d0b92711c661a616a
 
 // paddle position
 var paddlex;
@@ -137,6 +153,12 @@ function init() {
     initbricks();
     drawBricks();
 
+<<<<<<< HEAD
+    hit = document.getElementById("hit");
+    pop = document.getElementById("pop");
+
+=======
+>>>>>>> 7aeae9c0916ddac72125701d0b92711c661a616a
     // draw the ball 
     x = 250;
     y = 125;
@@ -230,6 +252,13 @@ function draw() {
     // if we have hit a brick, reverse the ball's direction
     // and mark the brick as broken
     if (y < NROWS * rowheight && row >= 0 && col >= 0 && bricks[row][col] == 1) {
+<<<<<<< HEAD
+        
+        // play pop sound        
+        pop.play();
+
+=======
+>>>>>>> 7aeae9c0916ddac72125701d0b92711c661a616a
         // increase y-velocity for every brick broken
         dy = -dy * velocityFactor;    
 
@@ -293,6 +322,9 @@ function draw() {
             // change x based on where it hits the paddle
             dx = 4 * ((x - (paddlex + paddlew / 2)) / paddlew);
             dy = -dy;
+
+            // play boing sound
+            hit.play();
         }
         // player lost the ball
         else {
