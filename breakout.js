@@ -1,34 +1,21 @@
 /*jslint browser: true, devel: true, white: true */
+(function() {
 "use strict";
-var x, y, dx, dy, ctx;
-var width, height;
-var intervalId = 0;
-
-var canvasMinX = 0;
-var canvasMaxX = 0;
-var velocityFactor = 1.02;
-var score = 0;
+var x, y, dx, dy, ctx, width, height,
+intervalId = 0, canvasMinX = 0, canvasMaxX = 0, 
+velocityFactor = 1.02, score = 0, 
 
 // sounds
-var hit;
-var pop;
+hit, pop,
 
 // paddle position
-var paddlex;
-var paddleh;
-var paddlew;
+paddlex, paddleh, paddlew,
 
 // left and right arrow keys
-var leftDown = false;
-var rightDown = false;
+leftDown = false, rightDown = false,
 
 // brick variables
-var bricks;
-var NROWS;
-var NCOLS;
-var brick_width;
-var brick_height;
-var padding;
+bricks, NROWS, NCOLS, brick_width, brick_height, padding;
 
 
 function showScore(i) {
@@ -290,3 +277,4 @@ function init() {
 }
 init();
 
+}());
